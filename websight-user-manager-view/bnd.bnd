@@ -1,0 +1,3 @@
+Bundle-Name: Websight User Manager View
+Bundle-License: GNU AGPLv3
+Sling-Bundle-Resources: /apps/websight-user-manager;propsJSON:=json
