@@ -1,0 +1,5 @@
+Bundle-Name: WebSight User Manager Service
+Bundle-License: GNU AGPLv3
+Sling-Model-Packages: pl.ds.websight.usermanager.rest
+Sling-Bundle-Resources: /apps/websight-user-manager-service/docs
+WebSight-Swagger-Index: /apps/websight-user-manager-service/docs/api.html
