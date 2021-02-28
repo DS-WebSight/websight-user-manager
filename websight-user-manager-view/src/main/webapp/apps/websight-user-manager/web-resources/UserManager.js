@@ -10,6 +10,8 @@ import { AvatarIcon } from 'websight-admin/Icons';
 import { PageContentContainer } from 'websight-admin/Containers';
 import GlobalNavigation from 'websight-admin/GlobalNavigation';
 import Footer from 'websight-admin/Footer';
+import { getWebFragments } from 'websight-fragments-esm';
+import { errorNotification } from '/apps/websight-rest-atlaskit-client/web-resources/js/Notification.js';
 
 import UsersPage from './pages/UsersPage.js';
 import UserDetailsPage from './pages/UserDetailsPage.js';
@@ -44,9 +46,10 @@ export default class UserManager extends React.Component {
         super(props);
 
         this.state = {
-            recentAuthorizables: RecentAuthorizablesService.loadRecentAuthorizablesFromLocalStorage()
+            recentAuthorizables: RecentAuthorizablesService.loadRecentAuthorizablesFromLocalStorage(),
+            extraActions: null
         };
-
+        getWebFragments('websight.admin.usermanager.extra.actions', (fragments) => this.setState({ extraActions: fragments }), errorNotification);
         this.onAuthorizableAction = this.onAuthorizableAction.bind(this);
     }
 
@@ -83,7 +86,7 @@ export default class UserManager extends React.Component {
     }
 
     render() {
-        const { recentAuthorizables } = this.state;
+        const { recentAuthorizables, extraActions } = this.state;
 
         return (
             <HashRouter>
@@ -114,7 +117,7 @@ export default class UserManager extends React.Component {
                                 <Route
                                     path={'/users'}
                                     render={(routeProps) =>
-                                        <UsersPage {...routeProps} onAuthorizableAction={this.onAuthorizableAction} />
+                                        <UsersPage {...routeProps} onAuthorizableAction={this.onAuthorizableAction} extraActions={extraActions} />
                                     }
                                 />
                                 <Route
@@ -126,7 +129,7 @@ export default class UserManager extends React.Component {
                                 <Route
                                     path={'/groups'}
                                     render={(routeProps) =>
-                                        <GroupsPage {...routeProps} onAuthorizableAction={this.onAuthorizableAction} />
+                                        <GroupsPage {...routeProps} onAuthorizableAction={this.onAuthorizableAction} extraActions={extraActions}/>
                                     }
                                 />
                                 <Route path={['/system-users/:userId/:tabName', '/system-users/:userId']}
@@ -137,7 +140,7 @@ export default class UserManager extends React.Component {
                                 <Route
                                     path={'/system-users'}
                                     render={(routeProps) =>
-                                        <SystemUsersPage {...routeProps} onAuthorizableAction={this.onAuthorizableAction} />
+                                        <SystemUsersPage {...routeProps} onAuthorizableAction={this.onAuthorizableAction} extraActions={extraActions}/>
                                     }
                                 />
                             </Switch>

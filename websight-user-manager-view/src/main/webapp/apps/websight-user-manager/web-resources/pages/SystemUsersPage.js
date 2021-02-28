@@ -178,6 +178,7 @@ export default class SystemUsersPage extends React.Component {
                     isInitialized={this.state.numberOfFoundUsers != null}
                     refreshUsers={this.refreshUsers}
                     onAuthorizableAction={this.props.onAuthorizableAction}
+                    extraActions={this.props.extraActions}
                 />
                 {this.state.numberOfPages > 1 &&
                     <PaginationContainer>

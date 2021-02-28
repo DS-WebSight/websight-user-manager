@@ -1,14 +1,21 @@
 import React from 'react';
 import { Cell, Row } from '@atlaskit/table-tree';
-
-import { TableRowActionButton } from 'websight-admin/Buttons';
+import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
 import { TableRowActionButtonsContainer } from 'websight-admin/Containers';
 import ConfirmationModal from 'websight-admin/ConfirmationModal';
 
 import SystemUserService from '../services/SystemUserService.js';
 import AuthorizableName from './AuthorizableName.js';
+import { fetchApplicableActions } from 'websight-admin/utils/ExtraActionsUtil';
 
 export default class SystemUserRow extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            extraActions: props.extraActions
+        }
+    }
     deleteUser() {
         const { user } = this.props;
 
@@ -25,14 +32,29 @@ export default class SystemUserRow extends React.Component {
     }
 
     actionButtons() {
+        const { extraActions } = this.state;
         return (
             <TableRowActionButtonsContainer>
-                <TableRowActionButton
-                    tooltipContent='Delete'
-                    iconClassName='material-icons'
-                    iconName='delete'
-                    onClick={() => this.deleteConfirmationModal.open()}
-                />
+                <DropdownMenu trigger='' triggerType='button' onOpenChange={(event) => {
+                    if (event.isOpen) {
+                        fetchApplicableActions(this.props.extraActions, this.props.user.path, (actions) => {
+                            this.setState({ extraActions : actions })
+                        })
+                    }
+                }}>
+                    {extraActions && extraActions.map((action, index) => {
+                        return (
+                            <DropdownItem
+                                key={index}
+                                onClick={() => action.onClick(this.props.user.path)}>{action.label}
+                            </DropdownItem>
+                        )
+                    })}
+                    <DropdownItem onClick={() => this.deleteConfirmationModal.open()}>Delete</DropdownItem>
+                </DropdownMenu>
+                {extraActions && extraActions.map((action) => {
+                    return action.modal(this.props.user);
+                })}
                 <ConfirmationModal
                     buttonText={'Delete'}
                     heading={'Delete user'}

@@ -30,6 +30,7 @@ export default class SystemUsersTable extends React.Component {
                                         user={user}
                                         onUpdate={() => this.props.refreshUsers()}
                                         onAuthorizableAction={this.props.onAuthorizableAction}
+                                        extraActions={this.props.extraActions}
                                     />
                                 )}
                             />

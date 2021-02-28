@@ -2,7 +2,6 @@ package pl.ds.websight.usermanager.util;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
@@ -31,11 +30,6 @@ public final class AuthorizableUtil {
 
     private AuthorizableUtil() {
         // no instances
-    }
-
-    public static Resource getOrCreateUserProfileResource(ResourceResolver resourceResolver, User user)
-            throws RepositoryException, PersistenceException {
-        return getOrCreateUserProfileResource(resourceResolver, user, Maps.newHashMap());
     }
 
     public static Resource getOrCreateUserProfileResource(ResourceResolver resourceResolver, User user, Map<String, Object> properties)

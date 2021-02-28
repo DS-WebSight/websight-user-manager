@@ -18,13 +18,13 @@ import static pl.ds.websight.rest.framework.annotations.SlingAction.HttpMethod.G
 
 @Component
 @SlingAction(GET)
-public class GetSystemUserRestAction extends AbstractRestAction<GetUserRestModel, SystemUserWithGroupsDto>
-        implements RestAction<GetUserRestModel, SystemUserWithGroupsDto> {
+public class GetSystemUserRestAction extends AbstractRestAction<GetSystemUserRestModel, SystemUserWithGroupsDto>
+        implements RestAction<GetSystemUserRestModel, SystemUserWithGroupsDto> {
 
     private static final Logger LOG = LoggerFactory.getLogger(GetSystemUserRestAction.class);
 
     @Override
-    protected RestActionResult<SystemUserWithGroupsDto> performAction(GetUserRestModel model) throws RepositoryException {
+    protected RestActionResult<SystemUserWithGroupsDto> performAction(GetSystemUserRestModel model) throws RepositoryException {
         LOG.debug("Start of get authorizable {}", model.getAuthorizableId());
         SystemUserWithGroupsDto authorizableDto = new SystemUserWithGroupsDto((User) model.getAuthorizable(), model.getResourceResolver());
         LOG.debug("End of get authorizable {}", model.getAuthorizableId());

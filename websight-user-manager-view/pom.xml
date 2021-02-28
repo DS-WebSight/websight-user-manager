@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>websight-user-manager-view</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <build>
         <resources>
@@ -47,13 +47,6 @@
             <plugin>
                 <groupId>biz.aQute.bnd</groupId>
                 <artifactId>bnd-baseline-maven-plugin</artifactId>
-                <configuration>
-                    <!--
-                        TODO: remove this plugin configuration (as a result, remove skip) after first release
-                        See: https://github.com/bndtools/bnd/issues/2452#issuecomment-390656025
-                    -->
-                    <skip>true</skip>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -98,6 +91,7 @@
     </dependencies>
 
   <scm>
-    <tag>1.0.0</tag>
+    <tag>1.0.1</tag>
+    <developerConnection>scm:git:ssh://git@192.168.1.146:7999/ws/websight-user-manager.git</developerConnection>
   </scm>
 </project>

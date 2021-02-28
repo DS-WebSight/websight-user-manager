@@ -181,6 +181,7 @@ export default class GroupsPage extends React.Component {
                     isInitialized={this.state.numberOfFoundGroups != null}
                     refreshGroups={this.refreshGroups}
                     onAuthorizableAction={this.props.onAuthorizableAction}
+                    extraActions={this.props.extraActions}
                 />
                 {this.state.numberOfPages > 1 &&
                     <PaginationContainer>

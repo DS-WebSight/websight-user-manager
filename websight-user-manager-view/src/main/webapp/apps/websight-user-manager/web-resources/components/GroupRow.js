@@ -12,6 +12,7 @@ import AuthorizablesTags from './AuthorizablesTags.js';
 import GroupFormModal from './GroupFormModal.js';
 import GroupService from '../services/GroupService.js';
 import AuthorizableName from './AuthorizableName.js';
+import { fetchApplicableActions } from 'websight-admin/utils/ExtraActionsUtil';
 
 const groupName = (group) =>
     group.displayName ? group.displayName : group.id;
@@ -19,7 +20,9 @@ const groupName = (group) =>
 export default class GroupRow extends React.Component {
     constructor(props) {
         super(props);
-
+        this.state = {
+            extraActions: props.extraActions
+        }
         this.deleteGroup = this.deleteGroup.bind(this);
     }
 
@@ -55,12 +58,30 @@ export default class GroupRow extends React.Component {
     }
 
     actionButtons() {
+        const { extraActions } = this.state;
         return (
             <TableRowActionButtonsContainer>
                 {this.editButton()}
-                <DropdownMenu trigger='' triggerType='button'>
+                <DropdownMenu trigger='' triggerType='button' onOpenChange={(event) => {
+                    if (event.isOpen) {
+                        fetchApplicableActions(this.props.extraActions, this.props.group.path, (actions) => {
+                            this.setState({ extraActions : actions })
+                        })
+                    }
+                }}>
+                    {extraActions && extraActions.map((action, index) => {
+                        return (
+                            <DropdownItem
+                                key={index}
+                                onClick={() => action.onClick(this.props.group.path)}>{action.label}
+                            </DropdownItem>
+                        )
+                    })}
                     <DropdownItem onClick={() => this.deleteConfirmationModal.open()}>Delete</DropdownItem>
                 </DropdownMenu>
+                {extraActions && extraActions.map((action) => {
+                    return action.modal(this.props.group);
+                })}
                 <ConfirmationModal
                     buttonText={'Delete'}
                     heading={'Delete group'}

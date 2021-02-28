@@ -11,6 +11,22 @@ import UserService from './../services/UserService.js';
 import { PRINCIPAL_EVERYONE } from '../utils/UserManagerConstants.js';
 import { filterOutEveryonePrincipal } from '../utils/AuthorizableUtil.js';
 
+import styled from 'styled-components';
+
+const PasswordActionsContainer = styled.div`
+    display: flex;
+    position: relative;
+    padding-top: 6px;
+    width: 100%;
+`;
+
+const PasswordActionButtonsContainer = styled.div`
+    position: absolute;
+    right: 0
+    display: flex
+    marginTop: -3px;
+`;
+
 export default class UserFormModal extends React.Component {
 
     constructor(props) {
@@ -29,10 +45,12 @@ export default class UserFormModal extends React.Component {
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.createAnotherUser = this.createAnotherUser.bind(this);
         this.cancel = this.cancel.bind(this);
+        this.generatePassword = this.generatePassword.bind(this);
     }
 
     open() {
         this.setState({
+            password: '',
             changePassword: false,
             isOpen: true,
             user: {
@@ -104,6 +122,19 @@ export default class UserFormModal extends React.Component {
         return (!this.props.create && this.state.changePassword);
     }
 
+    generatePassword() {
+        let stringInclude = '';
+        stringInclude += '!"#$%&\'()*+,-./:;<=>?@[]^_`{|}~';
+        stringInclude += '0123456789';
+        stringInclude += 'abcdefghijklmnopqrstuvwxyz';
+        stringInclude += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let password ='';
+        for (let i = 0; i < 40; i++) {
+            password += stringInclude.charAt(Math.floor(Math.random() * stringInclude.length));
+        }
+        this.setState({ password: password });
+    }
+
     render() {
         const { isOpen, user } = this.state;
 
@@ -142,13 +173,46 @@ export default class UserFormModal extends React.Component {
                         )}
 
                         {this.shouldChangePasswordFieldShowUp() && (
-                            <TextField
-                                autocomplete='off'
-                                isRequired
-                                type='password'
-                                label='Password'
-                                name='password'
-                            />
+                            <>
+                                <TextField
+                                    autocomplete='new-password'
+                                    isRequired
+                                    type='password'
+                                    label='Password'
+                                    name='password'
+                                    value={this.state.password}
+                                    onChange={(e) => {
+                                        this.setState({ password: e.target.value })
+                                    }}
+                                    ref={(element) => this.passwordInput = element}
+                                />
+                                <PasswordActionsContainer>
+                                    <PasswordActionButtonsContainer>
+                                        <Button
+                                            appearance='subtle'
+                                            onClick={this.generatePassword}
+                                        >
+                                            Generate password
+                                        </Button>
+                                        <Button
+                                            appearance='subtle'
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(this.passwordInput.value)
+                                            }}
+                                        >
+                                            Copy password
+                                        </Button>
+                                    </PasswordActionButtonsContainer>
+                                    <Checkbox
+                                        defaultChecked={false}
+                                        defaultValue={false}
+                                        label='Show Password'
+                                        onChange={(e) => {
+                                            this.passwordInput.type = e.target.checked ? 'text' : 'password';
+                                        }}
+                                    />
+                                </PasswordActionsContainer>
+                            </>
                         )}
 
                         {this.shouldConfirmedPasswordFieldShowUp() && (

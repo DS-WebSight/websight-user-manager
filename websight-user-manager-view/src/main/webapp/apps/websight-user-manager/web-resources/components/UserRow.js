@@ -11,12 +11,15 @@ import AuthorizablesTags from './AuthorizablesTags.js';
 import AuthorizableName from './AuthorizableName.js';
 import UserFormModal from './UserFormModal.js';
 import UserService from '../services/UserService.js';
+import { fetchApplicableActions } from 'websight-admin/utils/ExtraActionsUtil';
 
 export default class UserRow extends React.Component {
     constructor(props) {
         super(props);
-
         this.deleteUser = this.deleteUser.bind(this);
+        this.state = {
+            extraActions: props.extraActions
+        }
     }
 
     toggleUserEnabled() {
@@ -67,22 +70,42 @@ export default class UserRow extends React.Component {
 
     actionButtons() {
         const { user } = this.props;
+        const { extraActions } = this.state;
         return (
             <TableRowActionButtonsContainer>
                 {this.editButton()}
                 {
-                    !user.protectedUser &&
-                    <DropdownMenu trigger='' triggerType='button'>
-                        {
-                            <DropdownItem
-                                onClick={() => this.toggleUserEnabled()}>{this.props.user.enabled ? 'Disable' : 'Enable'}
-                            </DropdownItem>
+                    (!user.protectedUser || (this.props.extraActions && this.props.extraActions.length > 0)) &&
+                    <DropdownMenu trigger='' triggerType='button' onOpenChange={(event) => {
+                        if (event.isOpen) {
+                            fetchApplicableActions(this.props.extraActions, this.props.user.path, (actions) => {
+                                this.setState({ extraActions : actions })
+                            })
                         }
-                        <DropdownItem
-                            onClick={() => this.deleteConfirmationModal.open()}>Delete
-                        </DropdownItem>
+                    }}>
+                        {extraActions && extraActions.map((action, index) => {
+                            return (
+                                <DropdownItem
+                                    key={index}
+                                    onClick={() => action.onClick(user.path)}>{action.label}
+                                </DropdownItem>
+                            )
+                        })}
+                        {!user.protectedUser &&
+                            <>
+                                <DropdownItem
+                                    onClick={() => this.toggleUserEnabled()}>{this.props.user.enabled ? 'Disable' : 'Enable'}
+                                </DropdownItem>
+                                <DropdownItem
+                                    onClick={() => this.deleteConfirmationModal.open()}>Delete
+                                </DropdownItem>
+                            </>
+                        }
                     </DropdownMenu>
                 }
+                {extraActions && extraActions.map((action) => {
+                    return action.modal(user);
+                })}
                 <ConfirmationModal
                     buttonText={'Delete'}
                     heading={'Delete user'}

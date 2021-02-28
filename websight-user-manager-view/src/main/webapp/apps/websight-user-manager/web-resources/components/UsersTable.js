@@ -43,6 +43,7 @@ export default class UsersTable extends React.Component {
                                         user={user}
                                         onUpdate={this.onUserUpdate}
                                         onAuthorizableAction={this.props.onAuthorizableAction}
+                                        extraActions={this.props.extraActions}
                                     />
                                 )}
                             />

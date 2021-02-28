@@ -43,6 +43,7 @@ export default class GroupsTable extends React.Component {
                                         group={group}
                                         onUpdate={this.onGroupUpdate}
                                         onAuthorizableAction={this.props.onAuthorizableAction}
+                                        extraActions={this.props.extraActions}
                                     />
                                 )}
                             />

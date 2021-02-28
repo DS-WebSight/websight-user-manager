@@ -33,7 +33,8 @@ public class UpdateUserRestAction extends AbstractRestAction<UpdateUserRestModel
     private static final Logger LOG = LoggerFactory.getLogger(UpdateUserRestAction.class);
 
     @Override
-    protected RestActionResult<UserWithGroupsDto> performAction(UpdateUserRestModel model) throws PersistenceException, RepositoryException {
+    protected RestActionResult<UserWithGroupsDto> performAction(UpdateUserRestModel model)
+            throws PersistenceException, RepositoryException {
         LOG.debug("Start update user {} ", model.getAuthorizableId());
         Authorizable authorizable = model.getAuthorizable();
         if (authorizable.isGroup()) {
@@ -85,10 +86,13 @@ public class UpdateUserRestAction extends AbstractRestAction<UpdateUserRestModel
     }
 
     private void updateUserProfile(UpdateUserRestModel model, User user) throws RepositoryException, PersistenceException {
-        Resource profileResource = AuthorizableUtil.getOrCreateUserProfileResource(model.getResourceResolver(), user);
-        ModifiableValueMap profileValueMap = requireNonNull(profileResource.adaptTo(ModifiableValueMap.class), "User profile is required");
-        Map<String, Object> properties = model.getUserProfileProperties();
-        PropertiesUtil.putEveryIfChangedIgnoreNulls(profileValueMap, properties);
+        Resource profileResource = AuthorizableUtil.getOrCreateUserProfileResource(model.getResourceResolver(), user,
+                model.getUserProfileProperties());
+        ModifiableValueMap profileValueMap = profileResource.adaptTo(ModifiableValueMap.class);
+        if (profileValueMap != null) {
+            Map<String, Object> properties = model.getUserProfileProperties();
+            PropertiesUtil.putEveryIfChangedIgnoreNulls(profileValueMap, properties);
+        }
     }
 
     @Override
